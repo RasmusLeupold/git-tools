@@ -18,19 +18,21 @@ if ! [[ $? -eq 0 ]]; then
 fi
 
 for tool_script in $(find $(pwd)/tools -name '*.sh'); do
-  file_name=$(basename $tool_script)
+  command_str=$(echo $(basename $tool_script) | cut -d . -f 1)
 
-  ln -s $tool_script $bin_user_path/${file_name%.*} 2> /dev/null
+  ln -s $tool_script $bin_user_path/$command_str 2> /dev/null
 
   if ! [[ $? -eq 0 ]]; then
-    if [[ -L $bin_user_path/${file_name%.*} ]]; then
-      if [[ $(readlink $bin_user_path/${file_name%.*}) ==  $tool_script ]]; then
-        echo "link for ${file_name%.*} already exists"
+    if [[ -L $bin_user_path/$command_str ]]; then
+      if [[ $(readlink $bin_user_path/$command_str) ==  $tool_script ]]; then
+        echo "link for '$command_str' already exists"
       else
-        echo "link for ${file_name%.*} exists but point to a different file"
+        echo "link for '$command_str' already exists, but point to a different file"
       fi
     else
-      echo "there is da different file with the name of ${file_name%.*} in the bin directory"
+      echo "there is da different file with the same name of '$command_str' in the '$bin_user_path/' directory"
     fi
+  else
+    echo "link for '$command_str' created"
   fi
 done
