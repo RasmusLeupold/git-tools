@@ -17,6 +17,6 @@ for tool_script in $(find $(pwd)/tools -name '*.sh'); do
   ln -s $tool_script $bin_user_path/${file_name%.*} 2> /dev/null
 
   if ! [[ $? -eq 0 ]]; then
-    echo "the file '${file_name%.*}' already existis in '$bin_user_path'"
+    echo "the file/link '${file_name%.*}' already existis in '$bin_user_path'"
   fi
 done
