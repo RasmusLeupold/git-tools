@@ -4,6 +4,11 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 bin_user_path=$HOME/bin
 
+if ! [[ -d $bin_user_path ]]; then
+  echo "''/ does not exists"
+  exit 1
+fi
+
 echo $PATH | grep $bin_user_path > /dev/null
 
 if ! [[ $? -eq 0 ]]; then
