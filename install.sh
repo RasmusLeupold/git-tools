@@ -3,6 +3,7 @@
 cd "$( dirname "${BASH_SOURCE[0]}" )"
 
 bin_user_path=$HOME/bin
+
 echo $PATH | grep $bin_user_path > /dev/null
 
 if ! [[ $? -eq 0 ]]; then
@@ -21,12 +22,12 @@ for tool_script in $(find $(pwd)/tools -name '*.sh'); do
       # echo "link already exists..."
       # echo $bin_user_path/${file_name%.*}
       if [[ $(readlink $bin_user_path/${file_name%.*}) ==  $tool_script ]]; then
-        echo "link for ${file_name%.*} already there"
+        echo "link for ${file_name%.*} already exists"
       else
-        echo "error" # TODO: output something
+        echo "link for ${file_name%.*} exists but point to a different file"
       fi
     else
-      echo "error" # TODO: output something
+      echo "there is da different file with the name of ${file_name%.*} in the bin directory"
     fi
   fi
 done
