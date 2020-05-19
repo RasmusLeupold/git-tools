@@ -5,7 +5,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )"
 bin_user_path=$HOME/bin
 
 if ! [[ -d $bin_user_path ]]; then
-  echo "''/ does not exists"
+  echo "'$bin_user_path/' does not exists"
   exit 1
 fi
 
