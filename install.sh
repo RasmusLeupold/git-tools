@@ -17,6 +17,16 @@ for tool_script in $(find $(pwd)/tools -name '*.sh'); do
   ln -s $tool_script $bin_user_path/${file_name%.*} 2> /dev/null
 
   if ! [[ $? -eq 0 ]]; then
-    echo "the file/link '${file_name%.*}' already existis in '$bin_user_path'"
+    if [[ -L $bin_user_path/${file_name%.*} ]]; then
+      # echo "link already exists..."
+      # echo $bin_user_path/${file_name%.*}
+      if [[ $(readlink $bin_user_path/${file_name%.*}) ==  $tool_script ]]; then
+        echo "link for ${file_name%.*} already there"
+      else
+        echo "error" # TODO: output something
+      fi
+    else
+      echo "error" # TODO: output something
+    fi
   fi
 done
