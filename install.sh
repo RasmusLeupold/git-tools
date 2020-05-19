@@ -24,8 +24,6 @@ for tool_script in $(find $(pwd)/tools -name '*.sh'); do
 
   if ! [[ $? -eq 0 ]]; then
     if [[ -L $bin_user_path/${file_name%.*} ]]; then
-      # echo "link already exists..."
-      # echo $bin_user_path/${file_name%.*}
       if [[ $(readlink $bin_user_path/${file_name%.*}) ==  $tool_script ]]; then
         echo "link for ${file_name%.*} already exists"
       else
