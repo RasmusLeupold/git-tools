@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if [ $(git branch -v | grep $gone | wc -l) -eq 0 ]; then
+if [ $(git branch -v | grep gone | wc -l) -eq 0 ]; then
   echo "  no [gone] branches to delete"
   exit 0
 fi
