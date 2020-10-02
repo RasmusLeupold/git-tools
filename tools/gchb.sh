@@ -1,19 +1,14 @@
 #/bin/bash
 
 branches=( $(git branch | sed '/^*/d' | tr -d '\n') )
-i=1
+i=0
 
 for branch in "${branches[@]}"; do
-  echo "$i: $branch"
+  echo "$(($i+1)): $branch"
   ((i=i+1))
 done
 
-if [ $i -eq 1 ]; then
-  echo "There is only the current local branch."
-  exit 0
-fi
-
-((i=i-1))
+[ $i -eq 0 ] && echo "There is only the current local branch." && exit 0
 
 while [ -z $branch_number ] || ! [ $branch_number -eq $branch_number ] 2>/dev/null || ! [ $branch_number -le $i ]; do
   read -p "number of the branch: " branch_number
@@ -25,6 +20,5 @@ while [ -z $branch_number ] || ! [ $branch_number -eq $branch_number ] 2>/dev/nu
   fi
 done
 
-((branch_number=branch_number-1))
-
-git checkout ${branches[$branch_number]}
+branch_index=$((branch_number-1))
+git checkout ${branches[$branch_index]}
