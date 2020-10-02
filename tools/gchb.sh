@@ -8,6 +8,11 @@ for branch in "${branches[@]}"; do
   ((i=i+1))
 done
 
+if [ $i -eq 1 ]; then
+  echo "There is only the current local branch."
+  exit 0
+fi
+
 ((i=i-1))
 
 while [ -z $branch_number ] || ! [ $branch_number -eq $branch_number ] 2>/dev/null || ! [ $branch_number -le $i ]; do
