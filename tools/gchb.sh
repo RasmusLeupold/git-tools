@@ -8,7 +8,7 @@ for branch in "${branches[@]}"; do
   echo "$i: $branch\n"
 done
 
-[ ${#branches[@]} -eq 0 ] && echo "There is only the current local feature branch." && exit 0
+[ ${#branches[@]} -eq 0 ] && echo "There is no or only the current local feature branch." && exit 0
 
 while [ -z $branch_number ] || ! [ $branch_number -eq $branch_number ] 2>/dev/null || ! [ $branch_number -le $i ]; do
   read -p "Number of the branch to switch to: " branch_number
