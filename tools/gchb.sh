@@ -4,11 +4,11 @@ branches=( $(git branch | sed '/^*/d' | tr -d '\n') )
 i=0
 
 for branch in "${branches[@]}"; do
-  echo "$(($i+1)): $branch"
   ((i=i+1))
+  echo "$i: $branch"
 done
 
-[ $i -eq 0 ] && echo "There is only the current local branch." && exit 0
+[ ${#branches[@]} -eq 0 ] && echo "There is only the current local branch." && exit 0
 
 while [ -z $branch_number ] || ! [ $branch_number -eq $branch_number ] 2>/dev/null || ! [ $branch_number -le $i ]; do
   read -p "Number of the branch to switch to: " branch_number
