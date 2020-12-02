@@ -5,7 +5,7 @@ i=0
 
 for branch in "${branches[@]}"; do
   ((i=i+1))
-  echo "$i: $branch\n"
+  echo "$i: $branch"
 done
 
 [ ${#branches[@]} -eq 0 ] && echo "There is no or only the current local feature branch" && exit 0
