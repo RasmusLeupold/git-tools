@@ -1,15 +1,29 @@
 #/bin/bash
 
-if [ -n "$1" ]; then
-  number_of_matching_branches=$(git branch | grep $1 | awk '{print $1}' | wc -l)
-  [ $number_of_matching_branches -eq 0 ] && echo "There is no matching branch found by your argument"
-  [ $number_of_matching_branches -gt 1 ] && echo "There is more than one matching branch for your argument"
+function checkout_by_search_pattern {
+  git branch | grep $1 | awk '{print $1}' | xargs -n1 git checkout
+  exit 0
+}
 
-  if [ $number_of_matching_branches -eq 1 ]; then
-    git branch | grep $branch_search_pattern_argument | awk '{print $1}' | xargs -n1 git checkout
-    exit 0
-  fi
-fi
+function number_of_matching_branches {
+  echo $(git branch | grep $1 | awk '{print $1}' | wc -l)
+}
+
+function distinct_branch {
+  local number_of_matches=$1
+
+  [ $number_of_matches -eq 0 ] && echo "There is no matching branch" && return 1
+  [ $number_of_matches -gt 1 ] && echo "There is more than one matching branch" && return 1
+  [ $number_of_matches -eq 1 ]
+}
+
+function branch_number_selected {
+  local number_or_pattern=$1
+
+  [ $number_or_pattern -eq $number_or_pattern ] 2>/dev/null && [ $number_or_pattern -le $i ]
+}
+
+[ -n "$1" ] && distinct_branch $(number_of_matching_branches $1) && checkout_by_search_pattern $1
 
 branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
 i=0
@@ -21,34 +35,15 @@ done
 
 [ ${#branches[@]} -eq 0 ] && echo "There is no or only the current local feature branch" && exit 0
 
-while [ -z $branch_found ]; do
+while true; do
   read -p "Put a number of a branch or a pattern to search for: " branch_number_or_search_pattern
 
   [ -z $branch_number_or_search_pattern ] && echo "Please make an input"
 
   if [ -n "$branch_number_or_search_pattern" ]; then
-    if [ $branch_number_or_search_pattern -eq $branch_number_or_search_pattern ] 2>/dev/null; then
-      if [ $branch_number_or_search_pattern -le $i ]; then
-        branch_index=$((branch_number_or_search_pattern-1))
-      else
-        number_of_matching_branches=$(git branch | grep $branch_number_or_search_pattern | awk '{print $1}' | wc -l)
-      fi
-    else
-      number_of_matching_branches=$(git branch | grep $branch_number_or_search_pattern | awk '{print $1}' | wc -l)
-    fi
-  fi
+    branch_number_selected $branch_number_or_search_pattern && branch_index=$((branch_number_or_search_pattern-1))
+    [ -n "$branch_index" ] && git checkout ${branches[$branch_index]} && exit 0
 
-  if [ -n "$branch_index" ]; then
-    branch_found=true
-  else
-    if [ -n "$number_of_matching_branches" ]; then
-      [ $number_of_matching_branches -eq 0 ] && echo "there is no matching branch"
-      [ $number_of_matching_branches -gt 1 ] && echo "there is more than one matching branch"
-      [ $number_of_matching_branches -eq 1 ] && branch_search_pattern=$branch_number_or_search_pattern && branch_found=true
-      number_of_matching_branches=""
-    fi
+    distinct_branch $(number_of_matching_branches $branch_number_or_search_pattern) && checkout_by_search_pattern $branch_number_or_search_pattern
   fi
 done
-
-[ -n "$branch_search_pattern" ] && git branch | grep $branch_search_pattern | awk '{print $1}' | xargs -n1 git checkout
-[ -n "$branch_index" ] && git checkout ${branches[$branch_index]}
