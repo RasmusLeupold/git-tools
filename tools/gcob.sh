@@ -23,7 +23,9 @@ function branch_number_selected {
   [ $number_or_pattern -eq $number_or_pattern ] 2>/dev/null && [ $number_or_pattern -le $i ]
 }
 
-[ -n "$1" ] && distinct_branch $(number_of_matching_branches $1) && checkout_by_search_pattern $1
+argument=$1
+
+[ -n "$argument" ] && distinct_branch $(number_of_matching_branches $argument) && checkout_by_search_pattern $argument
 
 branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
 i=0
