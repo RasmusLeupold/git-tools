@@ -1,5 +1,16 @@
 #/bin/bash
 
+if [ -n "$1" ]; then
+  number_of_matching_branches=$(git branch | grep $1 | awk '{print $1}' | wc -l)
+  [ $number_of_matching_branches -eq 0 ] && echo "There is no matching branch found by your argument"
+  [ $number_of_matching_branches -gt 1 ] && echo "There is more than one matching branch for your argument"
+
+  if [ $number_of_matching_branches -eq 1 ]; then
+    git branch | grep $branch_search_pattern_argument | awk '{print $1}' | xargs -n1 git checkout
+    exit 0
+  fi
+fi
+
 branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
 i=0
 
