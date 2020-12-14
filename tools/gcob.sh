@@ -38,7 +38,7 @@ done
 [ ${#branches[@]} -eq 0 ] && echo "There is no or only the current local feature branch" && exit 0
 
 while true; do
-  read -p "Put a number of a branch or a pattern to search for: " branch_number_or_search_pattern
+  read -p "Enter a branch number or a matching pattern: " branch_number_or_search_pattern
 
   [ -z $branch_number_or_search_pattern ] && echo "Please make an input"
 
