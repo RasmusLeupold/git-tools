@@ -11,7 +11,7 @@ fi
 
 ( IFS=$'\n'; echo "${gone_branches[*]}" )
 
-read -p $'\n'"Are you sure to delete branches listed above (y/N): " confirm
+read -p $'\n'"Are you sure to delete branches listed above [y/N]: " confirm
 
 if [[ "$confirm" =~ ^(Y|y|yes|Yes|YES)$ ]]; then
   echo ${gone_branches[@]} | sed 's/ /\n/g' | xargs git branch -D
