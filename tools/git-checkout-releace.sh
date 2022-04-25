@@ -23,7 +23,6 @@ fi
 if [[ -z $delta_days ]]; then
     version_string="$(date +%Y%m%d)-${version_number}"
   else
-
     version_string="$(date -v${delta_days}d +%Y%m%d)-${version_number}"
 fi
 
