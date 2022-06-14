@@ -5,6 +5,10 @@ display_error () {
   exit 1
 }
 
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+[[ ! $current_branch == "develop" ]] && display_error "checkout develop first"
+
 if [[ -n $1 ]]; then
   if [[ "$1" =~ ^-$|^[1-9][0-9]*$ ]]; then
     [[ "$1" =~ ^-$ ]] || version_number=$1
