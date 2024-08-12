@@ -27,7 +27,9 @@ argument=$1
 
 [ -n "$argument" ] && distinct_branch $(number_of_matching_branches $argument) && checkout_by_search_pattern $argument
 
-branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
+# branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
+branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
+
 i=0
 
 for branch in "${branches[@]}"; do
