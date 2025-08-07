@@ -18,11 +18,11 @@ get_branch_name() {
 
 search_term=$1
 
-[[ -z $search_term ]] && echo "No branch selects to swich to" && exit 1
+[[ -z $search_term ]] && echo "No branch selects to swish to" && exit 1
 
 has_one_matching_branch $search_term || exit 1
 
-review_barch=$(git rev-parse --abbrev-ref HEAD)
+review_branch=$(git rev-parse --abbrev-ref HEAD)
 git checkout $(get_branch_name $search_term)
-git branch -D $review_barch
+git branch -D $review_branch
 
