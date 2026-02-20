@@ -6,7 +6,7 @@ function checkout_by_search_pattern {
 }
 
 function number_of_matching_branches {
-  echo $(git branch | grep $1 | awk '{print $1}' | wc -l)
+  echo $(git branch | grep $1 | sed '/^*/d;' | awk '{print $1}' | wc -l)
 }
 
 function distinct_branch {
@@ -25,10 +25,12 @@ function branch_number_selected {
 
 argument=$1
 
-[ -n "$argument" ] && distinct_branch $(number_of_matching_branches $argument) && checkout_by_search_pattern $argument
+[ -n "$argument" ] && number_of_branches=$(number_of_matching_branches $argument)
+[ -n "$argument" ] && distinct_branch $number_of_branches && checkout_by_search_pattern $argument
 
-# branches=( $(git branch | sed '/^*/d; /^  master$/d; /^  develop$/d' | tr -d '\n') )
-branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
+[ -n "$number_of_branches" ] && [ $number_of_branches -eq 1 ] && branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
+[ -n "$number_of_branches" ] && [ $number_of_branches -gt 1 ] && branches=( $(git branch | grep $argument | sed '/^*/d;' | tr -d '\n') )
+[ -z "$number_of_branches" ] && branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
 
 i=0
 
