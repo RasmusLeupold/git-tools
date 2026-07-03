@@ -1,12 +1,20 @@
 #/bin/bash
 
+function list_local_branches {
+  git branch | sed '/^[*+]/d;'
+}
+
+function list_matching_local_branches {
+  list_local_branches | grep "$1"
+}
+
 function checkout_by_search_pattern {
-  git branch | grep $1 | awk '{print $1}' | xargs -n1 git checkout
+  list_matching_local_branches "$1" | awk '{print $1}' | xargs -n1 git checkout
   exit 0
 }
 
 function number_of_matching_branches {
-  echo $(git branch | grep $1 | sed '/^*/d;' | awk '{print $1}' | wc -l)
+  echo $(list_matching_local_branches "$1" | awk '{print $1}' | wc -l)
 }
 
 function distinct_branch {
@@ -28,9 +36,9 @@ argument=$1
 [ -n "$argument" ] && number_of_branches=$(number_of_matching_branches $argument)
 [ -n "$argument" ] && distinct_branch $number_of_branches && checkout_by_search_pattern $argument
 
-[ -n "$number_of_branches" ] && [ $number_of_branches -eq 1 ] && branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
-[ -n "$number_of_branches" ] && [ $number_of_branches -gt 1 ] && branches=( $(git branch | grep $argument | sed '/^*/d;' | tr -d '\n') )
-[ -z "$number_of_branches" ] && branches=( $(git branch | sed '/^*/d;' | tr -d '\n') )
+[ -n "$number_of_branches" ] && [ $number_of_branches -eq 1 ] && branches=( $(list_local_branches | tr -d '\n') )
+[ -n "$number_of_branches" ] && [ $number_of_branches -gt 1 ] && branches=( $(list_matching_local_branches "$argument" | tr -d '\n') )
+[ -z "$number_of_branches" ] && branches=( $(list_local_branches | tr -d '\n') )
 
 i=0
 
