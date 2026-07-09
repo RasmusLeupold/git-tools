@@ -85,6 +85,9 @@ print_worktrees() {
 			((index=index+1))
 		done
 	fi
+
+	echo >&2
+	echo 'q: quit' >&2
 }
 
 choose_worktree() {
@@ -92,6 +95,11 @@ choose_worktree() {
 
 	while true; do
 		read -p 'Enter a worktree number: ' selected_index
+
+		if [[ "$selected_index" =~ ^[qQ]$ ]]; then
+			echo 'Selection cancelled' >&2
+			return 0
+		fi
 
 		[[ -z "$selected_index" ]] && echo 'Please make an input' >&2 && continue
 		[[ ! "$selected_index" =~ ^[0-9]+$ ]] && echo 'Please provide a number' >&2 && continue
@@ -126,7 +134,7 @@ if [[ "${#WORKTREES[@]}" -eq 1 ]]; then
 	SELECTED_WORKTREE="${WORKTREES[0]}"
 else
 	print_worktrees
-	choose_worktree
+	choose_worktree || return 1 2>/dev/null || exit 1
 fi
 
 if is_sourced; then
