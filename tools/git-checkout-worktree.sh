@@ -31,6 +31,27 @@ list_worktrees_from_parent() {
 	done < <(find "$parent_directory" -mindepth 1 -maxdepth 1 -type d | sort)
 }
 
+worktree_branch_name() {
+	local directory=$1
+	local branch_name
+
+	branch_name=$(git -C "$directory" rev-parse --abbrev-ref HEAD 2>/dev/null)
+
+	if [[ -z "$branch_name" ]]; then
+		echo 'unknown'
+		return 0
+	fi
+
+	if [[ "$branch_name" == 'HEAD' ]]; then
+		local detached_commit
+		detached_commit=$(git -C "$directory" rev-parse --short HEAD 2>/dev/null)
+		[[ -n "$detached_commit" ]] && echo "detached@$detached_commit" || echo 'detached'
+		return 0
+	fi
+
+	echo "$branch_name"
+}
+
 print_worktrees() {
 	local index=1
 	local has_be=0
@@ -45,7 +66,7 @@ print_worktrees() {
 		echo 'Back End:' >&2
 		for i in "${!WORKTREES[@]}"; do
 			[[ "${WORKTREE_LABELS[$i]}" != 'BE' ]] && continue
-			echo "$index: $(basename "${WORKTREES[$i]}")" >&2
+			echo "$index: $(basename "${WORKTREES[$i]}")  $(worktree_branch_name "${WORKTREES[$i]}")" >&2
 			((index=index+1))
 		done
 	fi
@@ -58,7 +79,7 @@ print_worktrees() {
 		echo 'Front End:' >&2
 		for i in "${!WORKTREES[@]}"; do
 			[[ "${WORKTREE_LABELS[$i]}" != 'FE' ]] && continue
-			echo "$index: $(basename "${WORKTREES[$i]}")" >&2
+			echo "$index: $(basename "${WORKTREES[$i]}")  $(worktree_branch_name "${WORKTREES[$i]}")" >&2
 			((index=index+1))
 		done
 	fi
