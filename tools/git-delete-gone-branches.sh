@@ -2,7 +2,7 @@
 
 git remote prune origin > /dev/null
 
-gone_branches=( $(git branch -v | sed '/^*/d' | awk '{print $3 " " $1}' | grep '^\[gone\]' | awk '{print $2 }') )
+gone_branches=( $(git branch -v | sed '/^[*+]/d;' | awk '{print $3 " " $1}' | grep '^\[gone\]' | awk '{print $2 }') )
 
 if [ ${#gone_branches[@]} -eq 0 ]; then
   echo "There is no gone branch to be deleted"
