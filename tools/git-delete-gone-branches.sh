@@ -12,7 +12,9 @@ fi
 
 if [ ${#gone_branches_in_worktree[@]} -gt 0 ]; then
   echo "The following gone branches are in worktree and cannot be deleted (please delete the worktree first):"
-  ( IFS=$'\n'; echo "  ${gone_branches_in_worktree[*]}" )
+  for branch in "${gone_branches_in_worktree[@]}"; do
+    echo "  [worktree] $branch"
+  done
   echo >&2
 fi
 
@@ -22,7 +24,9 @@ if [ ${#gone_branches[@]} -eq 0 ]; then
 fi
 
 echo "The following gone branches will be deleted:"
-( IFS=$'\n'; echo "  ${gone_branches[*]}" )
+for branch in "${gone_branches[@]}"; do
+  echo "  $branch"
+done
 
 read -p $'\n'"Are you sure you like to delete the listed branches above? [Y/n]: " confirm
 
