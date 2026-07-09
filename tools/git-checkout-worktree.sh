@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# How to use: cd "$(git-checkout-worktree)"
+
 is_sourced() {
 	[[ "${BASH_SOURCE[0]}" != "${0}" ]]
 }
