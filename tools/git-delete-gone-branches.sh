@@ -13,7 +13,7 @@ fi
 if [ ${#gone_branches_in_worktree[@]} -gt 0 ]; then
   echo "The following gone branches are in worktree and cannot be deleted (please delete the worktree first):"
   ( IFS=$'\n'; echo "  ${gone_branches_in_worktree[*]}" )
-  echo ""
+  echo >&2
 fi
 
 if [ ${#gone_branches[@]} -eq 0 ]; then
