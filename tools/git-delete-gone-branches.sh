@@ -3,13 +3,26 @@
 git remote prune origin > /dev/null
 
 gone_branches=( $(git branch -v | sed '/^[*+]/d;' | awk '{print $3 " " $1}' | grep '^\[gone\]' | awk '{print $2 }') )
+gone_branches_in_worktree=( $(git branch -v | sed -n '/^[+]/p' | awk '{print $4 " " $2}' | grep '^\[gone\]' | awk '{print $2 }') )
 
-if [ ${#gone_branches[@]} -eq 0 ]; then
-  echo "There is no gone branch to be deleted"
+if [ ${#gone_branches[@]} -eq 0 ] && [ ${#gone_branches_in_worktree[@]} -eq 0 ]; then
+  echo "There is no gone branch to delete"
   exit 0
 fi
 
-( IFS=$'\n'; echo "${gone_branches[*]}" )
+if [ ${#gone_branches_in_worktree[@]} -gt 0 ]; then
+  echo "The following gone branches are in worktree and cannot be deleted (please delete the worktree first):"
+  ( IFS=$'\n'; echo "  ${gone_branches_in_worktree[*]}" )
+  echo ""
+fi
+
+if [ ${#gone_branches[@]} -eq 0 ]; then
+  echo "There is no gone branch to delete"
+  exit 0
+fi
+
+echo "The following gone branches will be deleted:"
+( IFS=$'\n'; echo "  ${gone_branches[*]}" )
 
 read -p $'\n'"Are you sure you like to delete the listed branches above? [Y/n]: " confirm
 
